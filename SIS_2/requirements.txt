@@ -1,8 +1,0 @@
-playwright==1.36.0
-pandas==2.2.0
-python-dateutil==2.8.2
-apache-airflow==2.6.3
-sqlalchemy==1.4.54
-tqdm==4.66.1
-requests==2.31.0
-beautifulsoup4==4.12.2
