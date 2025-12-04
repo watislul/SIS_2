@@ -1,0 +1,20 @@
+[2025-12-04T20:30:56.967+0000] {taskinstance.py:1103} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: manga_final.check_files manual__2025-12-04T20:30:52.755696+00:00 [queued]>
+[2025-12-04T20:30:56.974+0000] {taskinstance.py:1103} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: manga_final.check_files manual__2025-12-04T20:30:52.755696+00:00 [queued]>
+[2025-12-04T20:30:56.975+0000] {taskinstance.py:1308} INFO - Starting attempt 1 of 1
+[2025-12-04T20:30:56.986+0000] {taskinstance.py:1327} INFO - Executing <Task(PythonOperator): check_files> on 2025-12-04 20:30:52.755696+00:00
+[2025-12-04T20:30:56.990+0000] {standard_task_runner.py:57} INFO - Started process 201 to run task
+[2025-12-04T20:30:56.995+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'manga_final', 'check_files', 'manual__2025-12-04T20:30:52.755696+00:00', '--job-id', '3', '--raw', '--subdir', 'DAGS_FOLDER/manga_pipeline.py', '--cfg-path', '/tmp/tmpqc7rngr8']
+[2025-12-04T20:30:57.002+0000] {standard_task_runner.py:85} INFO - Job 3: Subtask check_files
+[2025-12-04T20:30:57.025+0000] {logging_mixin.py:150} WARNING - /home/***/.local/lib/python3.7/site-packages/***/settings.py:195 DeprecationWarning: The sql_alchemy_conn option in [core] has been moved to the sql_alchemy_conn option in [database] - the old setting has been used, but please update your config.
+[2025-12-04T20:30:57.057+0000] {task_command.py:410} INFO - Running <TaskInstance: manga_final.check_files manual__2025-12-04T20:30:52.755696+00:00 [running]> on host 9b394514cb76
+[2025-12-04T20:30:57.121+0000] {taskinstance.py:1547} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='manga_final' AIRFLOW_CTX_TASK_ID='check_files' AIRFLOW_CTX_EXECUTION_DATE='2025-12-04T20:30:52.755696+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-12-04T20:30:52.755696+00:00'
+[2025-12-04T20:30:57.121+0000] {logging_mixin.py:150} INFO - ============================================================
+[2025-12-04T20:30:57.122+0000] {logging_mixin.py:150} INFO - TASK 2: Проверка файлов проекта
+[2025-12-04T20:30:57.122+0000] {logging_mixin.py:150} INFO - ============================================================
+[2025-12-04T20:30:57.122+0000] {logging_mixin.py:150} INFO - ✅ scraper.py: 7650 байт
+[2025-12-04T20:30:57.122+0000] {logging_mixin.py:150} INFO - ✅ cleaner.py: 4531 байт
+[2025-12-04T20:30:57.123+0000] {logging_mixin.py:150} INFO - ✅ loader.py: 1781 байт
+[2025-12-04T20:30:57.123+0000] {python.py:183} INFO - Done. Returned value was: files_checked
+[2025-12-04T20:30:57.139+0000] {taskinstance.py:1350} INFO - Marking task as SUCCESS. dag_id=manga_final, task_id=check_files, execution_date=20251204T203052, start_date=20251204T203056, end_date=20251204T203057
+[2025-12-04T20:30:57.182+0000] {local_task_job_runner.py:225} INFO - Task exited with return code 0
+[2025-12-04T20:30:57.206+0000] {taskinstance.py:2653} INFO - 1 downstream tasks scheduled from follow-on schedule check

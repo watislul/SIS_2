@@ -1,5 +1,31 @@
 version: '3.8'
+
+x-airflow-common:
+  &airflow-common
+  build: .
+  image: custom-airflow:latest
+  environment:
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+
+    _PIP_ADDITIONAL_REQUIREMENTS: "-r /opt/airflow/requirements.txt"
+
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./src:/opt/airflow/src
+    - ./data:/opt/airflow/data
+    - ./logs:/opt/airflow/logs
+    - ./requirements.txt:/opt/airflow/requirements.txt
+  user: "${AIRFLOW_UID:-50000}:0"
+  depends_on:
+    postgres:
+      condition: service_healthy
+    selenium:
+      condition: service_started
+
 services:
+
   postgres:
     image: postgres:13
     environment:
@@ -13,35 +39,38 @@ services:
       interval: 10s
       retries: 5
 
+  # 📌 Selenium с реальным Chrome
+  selenium:
+      image: seleniarm/standalone-chromium:latest
+      shm_size: "2gb"
+      restart: always
+      ports:
+        - "4444:4444"
+
+  airflow-init:
+    <<: *airflow-common
+    command: bash -c "
+      airflow db init &&
+      airflow users create \
+        --username admin \
+        --password admin \
+        --firstname Admin \
+        --lastname User \
+        --role Admin \
+        --email admin@example.com
+      "
+
+    restart: "no"
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: airflow scheduler
+
   airflow-webserver:
-    image: apache/airflow:2.5.0  # Используем ту же версию что в примере
-    restart: always
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor  # Используем LocalExecutor вместо Sequential
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-      AIRFLOW__WEBSERVER__RBAC: 'false'
-    volumes:
-      - ./dags:/opt/airflow/dags
-      - ./src:/opt/airflow/src
-      - ./data:/opt/airflow/data
-      - ./logs:/opt/airflow/logs
+    <<: *airflow-common
     ports:
       - "8080:8080"
-    command: >
-      bash -c "
-        airflow db init &&
-        airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com &&
-        airflow webserver
-      "
-    healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    command: airflow webserver
 
 volumes:
   postgres-db-volume:

@@ -33,28 +33,31 @@ def task2():
     
     return "files_checked"
 
+
 def task3():
-    """Запуск реального пайплайна"""
     print("="*60)
     print("TASK 3: Запуск пайплайна")
     print("="*60)
-    
-    # Простой запуск скриптов
+
+    import subprocess
+
     scripts = [
         ("scraper.py", "Скрапинг"),
         ("cleaner.py", "Очистка"),
         ("loader.py", "Загрузка в БД")
     ]
-    
+
     for script, description in scripts:
         script_path = f"/opt/airflow/src/{script}"
-        if os.path.exists(script_path):
-            print(f"▶️  {description}...")
-            os.system(f"python {script_path}")
-        else:
-            print(f"⚠️  {script} не найден")
-    
+        print(f"▶️  {description}...")
+
+        subprocess.run(
+            ["python", script_path],
+            check=True
+        )
+
     return "pipeline_executed"
+
 
 def task4():
     """Итоговая проверка"""

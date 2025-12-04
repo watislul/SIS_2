@@ -2,7 +2,8 @@
 scraper.py - Собирает данные с 100+ страниц манги с Remanga.org
 Использует headless Selenium и точный парсинг структуры HTML
 """
-from selenium import webdriver
+from selenium.webdriver import Remote
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -15,12 +16,15 @@ from bs4 import BeautifulSoup
 
 
 def setup_driver():
-    """Настройка драйвера в headless режиме"""
-    options = webdriver.ChromeOptions()
+    options = Options()
     options.add_argument("--headless")
-    options.add_argument("--window-size=1920,1080")
-    return webdriver.Chrome(options=options)
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
 
+    return Remote(
+        command_executor="http://selenium:4444/wd/hub",
+        options=options
+    )
 
 def get_manga_list(driver):
     """Получаем список популярных манг для парсинга"""
