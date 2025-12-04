@@ -13,12 +13,14 @@ from datetime import datetime
 import random
 from bs4 import BeautifulSoup
 
+
 def setup_driver():
     """Настройка драйвера в headless режиме"""
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument("--window-size=1920,1080")
     return webdriver.Chrome(options=options)
+
 
 def get_manga_list(driver):
     """Получаем список популярных манг для парсинга"""
@@ -51,6 +53,7 @@ def get_manga_list(driver):
     
     return manga_links[:120]
 
+
 def parse_manga_page(driver, url):
     """Парсинг одной страницы манги"""
     try:
@@ -69,12 +72,13 @@ def parse_manga_page(driver, url):
             "scraped_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
         
-        print(f"✓ {data['title'][:30]}... | Рейтинг: {data['rating']}")
+        print(f"{data['title'][:30]}... | Рейтинг: {data['rating']}")
         return data
         
     except Exception as e:
         print(f"Ошибка с {url}: {str(e)[:50]}")
         return None
+
 
 def clean_title(title):
     """Очистка заголовка"""
@@ -82,12 +86,14 @@ def clean_title(title):
         title = title[7:]
     return title.strip()
 
+
 def get_title(driver):
     """Извлекаем заголовок"""
     try:
         return driver.find_element(By.TAG_NAME, "h1").text.strip()
     except:
         return driver.title.split("—")[0].strip()
+
 
 def get_description(driver):
     """Ищем описание - теперь только из правильных элементов"""
@@ -107,6 +113,7 @@ def get_description(driver):
         print(f"Ошибка поиска описания: {e}")
         return ""
 
+
 def get_year(html):
     """Извлекает год из HTML с использованием BeautifulSoup и точных селекторов"""
     soup = BeautifulSoup(html, 'html.parser')
@@ -119,6 +126,7 @@ def get_year(html):
             return year_text
     
     return ""
+
 
 def get_rating(driver):
     """Извлекает рейтинг используя несколько возможных структур"""
@@ -145,8 +153,9 @@ def get_rating(driver):
                     return match.group(1)
                     
     except Exception as e:
-        print(f"⚠️ Ошибка при получении рейтинга: {str(e)[:100]}")
+        print(f"Ошибка при получении рейтинга: {str(e)[:100]}")
         return "0.0"
+
 
 def get_cover_image(driver):
     try:
@@ -160,7 +169,8 @@ def get_cover_image(driver):
         return img_url if img_url else ""
     except:
         return ""
-    
+
+
 def scrape_manga_data():
     """Основная функция скрапинга"""
     print("=" * 50)
@@ -194,6 +204,7 @@ def scrape_manga_data():
         driver.quit()
         print("Браузер закрыт")
 
+
 def save_data(data, filename="data/raw_manga.json"):
     """Сохранение данных в JSON"""
     import os
@@ -209,6 +220,7 @@ def save_data(data, filename="data/raw_manga.json"):
     if data:
         ratings = [float(d['rating']) for d in data if d['rating'] != "0.0"]
         print(f"Средний рейтинг: {sum(ratings)/len(ratings):.2f}" if ratings else "")
+
 
 if __name__ == "__main__":
     import os
